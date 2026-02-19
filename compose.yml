@@ -1,0 +1,48 @@
+services:
+  github-actions-runner:
+    # Build the runner image with dynamic configuration
+    build:
+      context: .
+      args:
+        # CPU architecture for the runner (arm64 for Raspberry Pi)
+        RUNNER_ARCH: arm64
+        # Docker-in-Docker capabilities
+        # Docker group ID from host system - must match host's docker group
+        # Get with: getent group docker | cut -d: -f3
+        DOCKER_GID: ${DOCKER_GID}
+
+    # Load environment variables from .env file
+    env_file:
+      - .env
+
+    # Set a fixed hostname and container name for easier identification
+    hostname: github-actions-runner
+    container_name: github-actions-runner
+
+    # Runtime environment configuration
+    environment:
+      # GitHub repository URL to register runner with
+      REPO_URL: ${REPO_URL}
+
+      # Personal Access Token for automatic runner token generation
+      # Create at: https://github.com/settings/tokens with 'repo' and 'workflow' scopes
+      ACCESS_TOKEN: ${ACCESS_TOKEN}
+
+      # Custom name for this runner instance
+      RUNNER_NAME: docker-runner
+      # Labels for workflow targeting (comma-separated)
+      LABELS: linux,arm64,docker,docker-runner
+
+    # Mount Docker socket for Docker-in-Docker capabilities
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
+    # Automatically restart unless manually stopped
+    restart: unless-stopped
+    
+    # Limit resources to prevent overconsumption on host system
+    deploy:
+    resources:
+      limits:
+        cpus: '2'
+        memory: 4G
