@@ -40,7 +40,7 @@ In this case, we're gonna deploy a Github Actions Runner onto a Raspberry Pi 5 (
 ## 1. Create a Fine-Grained Personal Access Token (PAT)
 In order to make the Runner authenticates with your Github repository (and bind the Runner to that), this dockerized Runner uses PAT for automatic runner registration and token refresh.
 
-1. Go to [Github Personal Access Token](https://github.com/settings/tokens)
+1. Go to [Github Personal Access Token](https://github.com/settings/personal-access-tokens)
 1. Click **Generate new token** (Fine-grained tokens)
 1. Set **Expiration** to 30-days (safer)
 1. Give your token a name (e.g. *"Self-hosted Runner"*)
